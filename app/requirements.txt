@@ -1,0 +1,3 @@
+# app/requirements.txt
+mysql-connector-python
+
