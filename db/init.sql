@@ -2,58 +2,61 @@
 CREATE DATABASE IF NOT EXISTS locadora;
 USE locadora;
 
--- Tabela de Categorias (categories)
-CREATE TABLE categories (
-    category_id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL
+CREATE TABLE IF NOT EXISTS Categorias(
+	categoria_id INT AUTO_INCREMENT PRIMARY KEY,
+	categoria_nome VARCHAR(50)
 );
 
--- Tabela de Filmes (Movies)
-CREATE TABLE movies (
-    movie_id INT AUTO_INCREMENT PRIMARY KEY,
-    title VARCHAR(255) NOT NULL,
-    release_year INT,
-    category_id INT,
-    FOREIGN KEY (category_id) REFERENCES Categories(category_id) ON DELETE CASCADE
+CREATE TABLE IF NOT EXISTS Filmes(
+	filme_id VARCHAR(30) PRIMARY KEY,
+	filme_nome VARCHAR(50) NOT NULL,
+	filme_ano INT,
+	filme_descricao VARCHAR(500) NOT NULL,
+	filme_estoque INT,
+	filme_alugados INT DEFAULT 0,
+	filme_categoria_id INT NOT NULL,
+	FOREIGN KEY (filme_categoria_id) REFERENCES Categorias(categoria_id)
 );
 
--- Tabela de Popularidade (Popularity)
-CREATE TABLE popularity (
-    popularity_id INT AUTO_INCREMENT PRIMARY KEY,
-    movie_id INT,
-    views INT DEFAULT 0,
-    FOREIGN KEY (movie_id) REFERENCES Movies(movie_id) ON DELETE CASCADE
+CREATE TABLE IF NOT EXISTS Aluguel(
+	aluguel_id INT AUTO_INCREMENT PRIMARY KEY,
+	aluguel_filme_id VARCHAR(30) NOT NULL,
+	aluguel_cliente_nome VARCHAR(100) NOT NULL,
+	FOREIGN KEY (aluguel_filme_id) REFERENCES Filmes(filme_id)
 );
 
--- Inserções na Tabela Categories
-INSERT INTO categories (name) VALUES 
-('Ação'), 
-('Romance'), 
-('Comédia'),
-('Drama'),
-('Terror'),
-('Animação');
+CREATE TABLE IF NOT EXISTS Clientes(
+	cliente_nome VARCHAR(100) NOT NULL PRIMARY KEY,
+	cliente_login VARCHAR(50) NOT NULL,
+	cliente_senha VARCHAR(50) NOT NULL,
+	cliente_alugado_id INT,
+	FOREIGN KEY (cliente_alugado_id) REFERENCES Aluguel(aluguel_id)
+);
 
--- Inserções na Tabela Movies, incluindo todas as categorias
-INSERT INTO movies (title, release_year, category_id) VALUES
-('Filme Ação 1', 2022, 1),  -- 'Ação' tem ID 1
-('Filme Romance 1', 2021, 2),  -- 'Romance' tem ID 2
-('Filme Comédia 1', 2020, 3),  -- 'Comédia' tem ID 3
-('Filme Drama 1', 2023, 4),  -- 'Drama' tem ID 4
-('Filme Terror 1', 2021, 5),  -- 'Terror' tem ID 5
-('Filme Animação 1', 2022, 6),  -- 'Animação' tem ID 6
-('Filme Ação 2', 2022, 1),  -- 'Ação' tem ID 1
-('Filme Romance 2', 2023, 2),  -- 'Romance' tem ID 2
-('Filme Comédia 2', 2021, 3);  -- 'Comédia' tem ID 3
 
--- Inserções na Tabela Popularidade, adicionando os novos filmes
-INSERT INTO popularity (movie_id, views) VALUES
-(1, 150),  -- Filme Ação 1
-(2, 75),   -- Filme Romance 1
-(3, 120),  -- Filme Comédia 1
-(4, 90),   -- Filme Drama 1
-(5, 60),   -- Filme Terror 1
-(6, 130),  -- Filme Animação 1
-(7, 200),  -- Filme Ação 2
-(8, 50),   -- Filme Romance 2
-(9, 180);  -- Filme Comédia 2
+
+SHOW TABLES;
+
+
+-- ADICIONANDO EM CLIENTE O ADMINISTRADOR
+SELECT * FROM Clientes;
+INSERT INTO Clientes VALUES('Admin', 'admin', 'admin', DEFAULT);
+INSERT INTO Clientes VALUES('Roberto', 'robb', 'robb', DEFAULT);
+	
+
+-- ADICIONANDO AS CATEGORIAS
+SELECT * FROM Categorias;
+INSERT INTO Categorias (categoria_nome) VALUES ('ACAO'), ('ROMANCE'), ('TERROR'), ('COMEDIA'), ('FICCAO'), ('DRAMA'), ('ANIMACAO');
+
+
+-- ADICIONANDO AOS FILMES
+SELECT * FROM Filmes;
+INSERT INTO Filmes VALUES('134711', 'Vingadores', 2012, 'Brincando de Heroi', 7, DEFAULT, 1);
+INSERT INTO Filmes VALUES('082211', 'A Culpa e das Estrelas', 2014, 'Triste.', 3, DEFAULT, 2);
+INSERT INTO Filmes VALUES('172611', 'O Chamado', 2002, 'Aquela menina da TV', 9, DEFAULT, 3);
+INSERT INTO Filmes VALUES('065911', 'O Diabo Veste Prada', 2006, 'Ela so queria um emprego...', 1, DEFAULT, 4);
+INSERT INTO Filmes VALUES('213711', 'Star Wars IV', 1997, 'Anakin, nao faca isso', 16, DEFAULT, 5);
+INSERT INTO Filmes VALUES('000011', 'Taxi Driver', 1976, 'Motorista Maluco', 11, DEFAULT, 6);
+INSERT INTO Filmes VALUES('180411', 'Frozen', 2014, 'Entorpecentes', 9, DEFAULT, 7);
+INSERT INTO Filmes VALUES('135811', 'IT', 2017, 'Nunca confie em palhaços', 0, DEFAULT, 3);
+
